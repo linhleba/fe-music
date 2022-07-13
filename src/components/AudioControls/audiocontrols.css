@@ -1,0 +1,36 @@
+.audio-controls {
+  display: flex;
+  justify-content: space-around;
+  width: 75%;
+  margin: 0 auto 15px;
+}
+
+.audio-controls .prev svg,
+.audio-controls .next svg {
+  width: 35px;
+  height: 35px;
+}
+
+.audio-controls .play svg,
+.audio-controls .pause svg {
+  height: 60px;
+  width: 60px;
+}
+
+.audio-controls path {
+  fill: blue;
+}
+
+.color-backdrop {
+  background: linear-gradient(45deg, #00aeb0 20%, transparent 100%) no-repeat;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: -1;
+}
+
+/* .color-backdrop.playing {
+  animation: colorChange 20s alternate infinite;
+} */
