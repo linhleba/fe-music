@@ -17,12 +17,60 @@ const SongDetail = () => {
   const [trackProgress, setTrackProgress] = useState(0);
   const [duration, setDuration] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
+  const [songs, setSongs] = useState([]);
+  const [currentIndex, setCurrentIndex] = useState(-1);
 
-  const toPrevTrack = () => {};
+  const checkIndexForCurrentSong = (id) => {
+    let currentIndex = -1;
+    songs.map((item, index) => {
+      // console.log('item is', item);
+      if (item.id == id) {
+        currentIndex = index;
+      }
+    });
+    return currentIndex;
+  };
+
+  useEffect(() => {
+    // Check the songs in list songs to get index
+    async function setSong() {
+      const resp = await api.getSong();
+      setSongs(resp?.object);
+    }
+    setSong();
+  }, []);
+
+  useEffect(() => {
+    if (songs.length != 0) {
+      const currentIndex = checkIndexForCurrentSong(id);
+      setCurrentIndex(currentIndex);
+    }
+  }, [songs]);
+
+  // useEffect(() => {
+  //   console.log('the songs get is', songs);
+  // }, [songs]);
+
+  const toPrevTrack = () => {
+    if (currentIndex == 0) {
+      alert('This is the first song in the list');
+    } else {
+      navigate(`../song/${songs[currentIndex - 1].id}`);
+
+      window.location.reload();
+    }
+  };
 
   const countTimer = () => {};
 
-  const toNextTrack = () => {};
+  const toNextTrack = () => {
+    if (currentIndex == songs.length - 1) {
+      alert('This is the end song.');
+    } else {
+      navigate(`../song/${songs[currentIndex + 1].id}`);
+      window.location.reload();
+    }
+  };
   // define background
   const currentPercentage = duration
     ? `${(trackProgress / duration) * 100}%`
@@ -33,7 +81,7 @@ const SongDetail = () => {
 
   const getSongDetail = async () => {
     const data = await api.getSongById(id);
-    console.log('data', data);
+
     return data.object;
   };
 
@@ -77,7 +125,7 @@ const SongDetail = () => {
 
   return (
     <div className="flex bg-green-100 grow">
-      {isLoading ? (
+      {isLoading || songs.length == 0 ? (
         <Loading />
       ) : (
         <div className="grow">

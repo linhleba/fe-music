@@ -6,5 +6,14 @@
   "No.": "No.",
   "Name": "Name",
   "Genre": "Genre",
-  "Action": "Action"
+  "Action": "Action",
+  "createsong.header": "Create song",
+  "name.popup": "Name",
+  "genre.popup": "Genre",
+  "author.popup": "Author",
+  "audio.popup": "Audio File",
+  "thumbnail.popup": "Thumbnail File",
+  "update.popup": "Update",
+  "confirm.popup": "Confirm",
+  "reset.popup": "Reset"
 }
