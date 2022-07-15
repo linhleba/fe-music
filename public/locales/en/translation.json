@@ -15,5 +15,10 @@
   "thumbnail.popup": "Thumbnail File",
   "update.popup": "Update",
   "confirm.popup": "Confirm",
-  "reset.popup": "Reset"
+  "reset.popup": "Reset",
+  "addNewGenre.popup": "Add new genre",
+  "addNewAuthor.popup": "Add new author",
+  "addBtn.popup": "Add",
+  "existedGenre.popup": "Existed genre",
+  "existedAuthor.popup": "Existed author"
 }

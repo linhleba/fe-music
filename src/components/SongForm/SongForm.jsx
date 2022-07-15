@@ -17,16 +17,18 @@ const SongForm = ({ songData, handleInfo }) => {
   const [src, setsrc] = useState();
   const [songThumbnail, setSongThumbnail] = useState();
   const { t } = useTranslation();
+  const [isAddNewAuthor, setIsAddNewAuthor] = useState(false);
+  const [isAddNewGenre, setIsAddNewGenre] = useState(false);
 
+  async function getGenre() {
+    const data = await api.getGenre();
+    setGenre(data);
+  }
+  async function getAuthor() {
+    const data = await api.getAuthor();
+    setAuthor(data);
+  }
   useEffect(() => {
-    async function getGenre() {
-      const data = await api.getGenre();
-      setGenre(data);
-    }
-    async function getAuthor() {
-      const data = await api.getAuthor();
-      setAuthor(data);
-    }
     getGenre();
     getAuthor();
   }, []);
@@ -48,9 +50,11 @@ const SongForm = ({ songData, handleInfo }) => {
   } else {
     initialFValues = {
       songName: '',
-      genre_id: '1',
-      author_id: '1',
+      genre_id: '',
+      author_id: '',
       thumbnail: '',
+      newAuthor: '',
+      newGenre: '',
     };
   }
   // setIsAddingForm(true);
@@ -76,6 +80,33 @@ const SongForm = ({ songData, handleInfo }) => {
   };
 
   const uploadAudio = (file) => {};
+
+  const addAuthor = () => {};
+
+  const addNewAuthor = async () => {
+    let resp = await api.addAuthor({
+      name: values.newAuthor,
+    });
+    getAuthor();
+    setIsAddNewAuthor(false);
+    setValues({
+      ...values,
+      ['author_id']: resp.id,
+    });
+  };
+
+  const addNewGenre = async () => {
+    let resp = await api.addGenre({
+      name: values.newGenre,
+    });
+    console.log('resp is', resp);
+    getGenre();
+    setIsAddNewGenre(false);
+    setValues({
+      ...values,
+      ['genre_id']: resp.id,
+    });
+  };
 
   const {
     values,
@@ -144,29 +175,110 @@ const SongForm = ({ songData, handleInfo }) => {
         </Grid>
         <Grid item xs={6}>
           <div>
-            <Controls.Select
-              name="genre_id"
-              label={t('genre.popup')}
-              value={values.genre_id}
-              onChange={handleInputChange}
-              error={errors.genre_id}
-              options={genre}
-            />
+            {isAddNewGenre ? (
+              <>
+                <Controls.Input
+                  name="newGenre"
+                  label={t('genre.popup')}
+                  value={values.newGenre}
+                  className="w-full px-4 py-2 text-sm text-gray-900 bg-gray-50 rounded-md border border-gray-300"
+                  type="text"
+                  defaultValue={''}
+                  onChange={handleInputChange}
+                />
+                <button
+                  type="button"
+                  class="ml-2 text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-200 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700"
+                  onClick={() => addNewGenre()}
+                >
+                  {t('addBtn.popup')}
+                </button>
+                <p
+                  className="ml-2 text-sm italic hover:underline hover:cursor-pointer"
+                  onClick={() => {
+                    setIsAddNewGenre(false);
+                  }}
+                >
+                  {t('existedGenre.popup')}
+                </p>
+                <br />
+              </>
+            ) : (
+              <>
+                <Controls.Select
+                  name="genre_id"
+                  label={t('genre.popup')}
+                  value={values.genre_id}
+                  onChange={handleInputChange}
+                  error={errors.genre_id}
+                  options={genre}
+                />
+                <p
+                  className="ml-2 text-sm italic hover:underline hover:cursor-pointer"
+                  onClick={() => {
+                    setIsAddNewGenre(true);
+                  }}
+                >
+                  {t('addNewGenre.popup')}
+                </p>
+              </>
+            )}
 
-            <Controls.Select
-              name="author_id"
-              label={t('author.popup')}
-              value={values.author_id}
-              onChange={handleInputChange}
-              error={errors.author_id}
-              options={author}
-            />
+            {isAddNewAuthor ? (
+              <>
+                <Controls.Input
+                  name="newAuthor"
+                  label={t('author.popup')}
+                  value={values.newAuthor}
+                  className="w-full px-4 py-2 text-sm text-gray-900 bg-gray-50 rounded-md border border-gray-300"
+                  type="text"
+                  defaultValue={''}
+                  onChange={handleInputChange}
+                />
+                <button
+                  type="button"
+                  class="ml-2 text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-200 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700"
+                  onClick={() => addNewAuthor()}
+                >
+                  {t('addBtn.popup')}
+                </button>
+                <p
+                  className="ml-2 text-sm italic hover:underline hover:cursor-pointer"
+                  onClick={() => {
+                    setIsAddNewAuthor(false);
+                  }}
+                >
+                  {t('existedAuthor.popup')}
+                </p>
+                <br />
+              </>
+            ) : (
+              <>
+                <Controls.Select
+                  name="author_id"
+                  label={t('author.popup')}
+                  value={values.author_id}
+                  onChange={handleInputChange}
+                  error={errors.author_id}
+                  options={author}
+                />
+                <p
+                  className="ml-2 text-sm italic hover:underline hover:cursor-pointer"
+                  onClick={() => {
+                    setIsAddNewAuthor(true);
+                  }}
+                >
+                  {t('addNewAuthor.popup')}
+                </p>
+              </>
+            )}
 
             <Controls.Button
               type="submit"
               text={songData ? t('update.popup') : t('confirm.popup')}
             />
             <Controls.Button
+              className="ml-2"
               text={t('reset.popup')}
               color="default"
               onClick={resetForm}

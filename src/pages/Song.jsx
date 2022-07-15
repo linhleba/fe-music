@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Table from '../components/Table/Table';
 import { useQuery, useMutation } from 'react-query';
 import * as api from '../api/index';
@@ -14,7 +14,6 @@ import PopUp from '../components/PopUp/PopUp';
 import SongForm from '../components/SongForm/SongForm';
 import { useDispatch } from 'react-redux';
 import { setSnackbar } from './../redux/ducks/snackbar';
-import { set } from 'date-fns';
 
 export const Song = () => {
   const dispatch = useDispatch();
@@ -28,17 +27,25 @@ export const Song = () => {
     const data = await api.getSong();
     return data.object;
   };
+  const [songData, setSongData] = useState(null);
 
   const deleteSong = async (id) => {
     return await api.deleteSong(id);
   };
-  const mutation = useMutation((id) => deleteSong(id));
+  const mutation = useMutation((id) => deleteSong(id), {
+    onSuccess: async () => {
+      dispatch(setSnackbar(true, 'success', 'Deleted successfully'));
+      let fetchData = await getSong();
+      setSongData(fetchData);
+    },
+  });
 
   const { isLoading, isError, data, error } = useQuery('songs', getSong);
 
-  // if (data) {
-  //   console.log(data);
-  // }
+  useEffect(() => {
+    setSongData(data);
+  }, [data]);
+
   const hData = [t('No.'), t('Name'), t('Genre'), t('Action')];
 
   const handleViewDetails = (item) => {
@@ -46,24 +53,14 @@ export const Song = () => {
     navigate(`/song/${item.id}`);
   };
 
+  useEffect(() => {
+    console.log('song data is', songData);
+  }, [songData]);
+
   const handleDelete = async (index) => {
     const id = data[index].id;
 
     mutation.mutate(id);
-
-    // if (mutation.isSuccess) {
-    //   dispatch(setSnackbar(true, 'success', 'Deleted successfully'));
-    //   getSong();
-    // } else {
-    //   dispatch(setSnackbar(true, 'error', 'Something went wrong'));
-    // }
-    // const status = await api.deleteSong(id);
-    // if (status == 200) {
-    //   dispatch(setSnackbar(true, 'success', 'Deleted successfully'));
-    //   getSong();
-    // } else {
-    //   dispatch(setSnackbar(true, 'error', 'Something went wrong'));
-    // }
   };
 
   const handleInfo = async (values, resetForm, songData) => {
@@ -81,13 +78,13 @@ export const Song = () => {
       dispatch(setSnackbar(true, 'error', 'There is something wrong!'));
     } else {
       dispatch(setSnackbar(true, 'success', 'Add song successfully!'));
+      let updatedData = await getSong();
+      setSongData(updatedData);
       resetForm();
     }
   };
   return (
     <>
-      {/* <h1>{data ? data : 'Hello'}</h1> */}
-
       {
         <>
           <Header setOpenPopup={setOpenPopup} />
@@ -96,27 +93,24 @@ export const Song = () => {
             <Loading />
           ) : (
             <>
-              {mutation.isSuccess
-                ? dispatch(
-                    setSnackbar(true, 'success', 'Add song successfully!'),
-                  )
-                : null}
-              <Table
-                headData={hData}
-                bodyData={data ? data : []}
-                ignoredData={[
-                  'author',
-                  'genre',
-                  'id',
-                  'src',
-                  'thumbnail',
-                  'updateAt',
-                ]}
-                specialData={['genre']}
-                limit="5"
-                handleViewDetails={(index) => handleViewDetails(index)}
-                handleDelete={(index) => handleDelete(index)}
-              />
+              {songData && (
+                <Table
+                  headData={hData}
+                  bodyData={songData ? songData : []}
+                  ignoredData={[
+                    'author',
+                    'genre',
+                    'id',
+                    'src',
+                    'thumbnail',
+                    'updateAt',
+                  ]}
+                  specialData={['genre']}
+                  limit="5"
+                  handleViewDetails={(index) => handleViewDetails(index)}
+                  handleDelete={(index) => handleDelete(index)}
+                />
+              )}
             </>
           )}
           <PopUp

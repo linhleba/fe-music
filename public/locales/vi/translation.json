@@ -15,5 +15,10 @@
   "thumbnail.popup": "File hình ảnh",
   "update.popup": "Cập nhật",
   "confirm.popup": "Xác nhận",
-  "reset.popup": "Đặt lại"
+  "reset.popup": "Đặt lại",
+  "addNewGenre.popup": "Thêm mới thể loại",
+  "addNewAuthor.popup": "Thêm mới tác giả",
+  "addBtn.popup": "Thêm",
+  "existedGenre.popup": "Đã có thể loại",
+  "existedAuthor.popup": "Đã có tác giả"
 }

@@ -91,7 +91,7 @@ const SongDetail = () => {
   );
 
   // Change the slider
-  const onScrub = (value) => {
+  const onChangeRange = (value) => {
     // Clear any timers already running
     // clearInterval(intervalRef.current);
     audioRef.current.currentTime = value;
@@ -199,9 +199,9 @@ const SongDetail = () => {
                     min="0"
                     max={duration ? duration : `${duration}`}
                     // className="progress"
-                    onChange={(e) => onScrub(e.target.value)}
-                    // onMouseUp={onScrubEnd}
-                    // onKeyUp={onScrubEnd}
+                    onChange={(e) => onChangeRange(e.target.value)}
+                    // onMouseUp={onChangeRangeEnd}
+                    // onKeyUp={onChangeRangeEnd}
                     style={{
                       background: trackStyling,
                       width: '100%',

@@ -1,6 +1,7 @@
 import apiCaller from '../utils/apiCaller';
 import axios from 'axios';
 import * as Config from '../constants/Config';
+import { responsiveFontSizes } from '@material-ui/core';
 
 export const getSong = async () => {
   let data = [];
@@ -60,4 +61,20 @@ export const deleteSong = async (id) => {
   });
 
   return status;
+};
+
+export const addAuthor = async (payload) => {
+  let resp;
+  await apiCaller('api/author', 'post', payload).then((res) => {
+    resp = res.data;
+  });
+  return resp;
+};
+
+export const addGenre = async (payload) => {
+  let resp;
+  await apiCaller('api/genre', 'post', payload).then((res) => {
+    resp = res.data.object;
+  });
+  return resp;
 };
